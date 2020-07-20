@@ -18,5 +18,16 @@ const HouseSchema = new Schema({
         type:String,
         required:true
     },
-    
+    createdAt:{
+        type:Date,
+        default:Date.now
+    },
+    updatedAt:{
+        type:Date,
+        default:Date.now
+    }
 })
+
+const House = mongoose.model('house', HouseSchema);
+
+module.exports = House;
