@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-c
 
 const {db, PORT} = require('./config')
 
@@ -11,7 +10,9 @@ app.get('/', (req,res) =>{
     res.send('asd')
 })
 
-app.use('/admin', require('./routes/admin'));
+
+
+app.use('/house', require('./routes/house'))
 
 if(db){
     app.listen(PORT, () =>{
