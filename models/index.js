@@ -3,7 +3,7 @@ const Admin = require("./Admin");
 const House = require("./House");
 
 module.exports = {
-    Admin,
+    AdminHouse,
     User,
     House,
 };
