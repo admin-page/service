@@ -10,6 +10,10 @@ app.get('/', (req,res) =>{
     res.send('asd')
 })
 
+
+
+app.use('/house', require('./routes/house'))
+
 if(db){
     app.listen(PORT, () =>{
         console.log(`Server running on port ${PORT}`)
