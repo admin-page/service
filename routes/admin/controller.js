@@ -102,6 +102,7 @@ module.exports = {
                 );
                 if (compared === true) {
                     const token = await createToken({
+                        isAdmin:true,
                         id: registeredUser._id,
                         fullname: registeredUser.fullname,
                         email: registeredUser.email,
