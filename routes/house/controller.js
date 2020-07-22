@@ -57,5 +57,16 @@ module.exports = {
         catch(error){
             res.send(error)
         }
+    },
+    findHouseById: async (req,res) =>{
+        const {id} = req.params
+        try{
+            const result =  await House.findById(id)
+            res.send({message:'display house by id', data:result})
+        }
+        catch(error){
+            console.log(error);
+            res.send(error)
+        }
     }
 }
