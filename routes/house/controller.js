@@ -33,7 +33,6 @@ module.exports = {
             res.send({message:'data upload succesfuly', data:result})
         }
         catch(error){
-            console.log(error)
             res.send(error)
         }
     },
@@ -48,6 +47,15 @@ module.exports = {
         catch(error){
             res.send(error)
         }
-       
+    },
+    filterHouse: async (req,res) =>{
+        const title = req.body.houseTitle
+        try{
+            const result = await House.find({houseTitle:title}).exec()
+            res.send({message:'get by title', data:result})
+        }
+        catch(error){
+            res.send(error)
+        }
     }
 }

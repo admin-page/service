@@ -1,11 +1,11 @@
-const { Admin } = require("../../models");
+const { User } = require("../../models");
 const { hash, compare } = require("../../helpers");
 const { createToken } = require("../../helpers");
 
 module.exports = {
-    getAdmin: async (req, res) => {
+    getUser: async (req, res) => {
         try {
-            const result = await Admin.find();
+            const result = await User.find();
 
             res.send({ message: "Get All datas users", data: result });
         } catch (error) {
@@ -13,33 +13,38 @@ module.exports = {
         }
     },
 
-    getAdminName: async (req, res) => {
-        const { username } = req.params;
+    getUserName: async (req, res) => {
+        const { search } = req.params;
 
         try {
-            const result = await Admin.find({
-                username: { $regex: username, $options: "i" },
-            });
-
-            res.send({ result: result });
+            const result = await User.find({
+                $or: [
+                    { fullname: { $regex: search, $options: "i" } },
+                    { address: { $regex: search, $options: "i" } },
+                ],
+            }).exec();
+            if (result) {
+                res.send({ result: result });
+            }
+            res.send(`${search} Not Found`);
         } catch (error) {
             res.send(error);
         }
     },
 
-    createAdmin: async (req, res) => {
+    createUser: async (req, res) => {
         const { email, password } = req.body;
         const hashed = await hash(password);
 
         try {
-            const checkEmail = await Admin.findOne({
+            const checkEmail = await User.findOne({
                 email,
             }).exec();
             if (checkEmail) {
                 res.send(`Email ${email} has been registered`);
             }
 
-            const result = await Admin.create({
+            const result = await User.create({
                 ...req.body,
                 password: hashed,
             });
@@ -50,12 +55,12 @@ module.exports = {
         }
     },
 
-    updateAdmin: async (req, res) => {
+    updateUser: async (req, res) => {
         const { id } = req.params;
         try {
             const { password } = req.body;
             const hashed = await hash(password);
-            const results = await Admin.findByIdAndUpdate(id, {
+            const results = await User.findByIdAndUpdate(id, {
                 $set: {
                     ...req.body,
                     password: hashed,
@@ -71,11 +76,11 @@ module.exports = {
         }
     },
 
-    deleteAdmin: async (req, res) => {
+    deleteUser: async (req, res) => {
         const { id } = req.params;
 
         try {
-            const results = await Admin.deleteOne({
+            const results = await User.deleteOne({
                 _id: id,
             });
             res.send({
@@ -91,7 +96,7 @@ module.exports = {
         try {
             const { password, email, username } = req.body;
 
-            const registeredUser = await Admin.findOne({
+            const registeredUser = await User.findOne({
                 $or: [{ email }, { username }],
             });
 
