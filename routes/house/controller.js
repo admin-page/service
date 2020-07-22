@@ -1,4 +1,3 @@
-const {createToken, verifyToken} = require('../../helpers');
 const {House} = require('../../models')
 
 module.exports = {
@@ -55,6 +54,17 @@ module.exports = {
             res.send({message:'get by title', data:result})
         }
         catch(error){
+            res.send(error)
+        }
+    },
+    findHouseById: async (req,res) =>{
+        const {id} = req.params
+        try{
+            const result =  await House.findById(id)
+            res.send({message:'display house by id', data:result})
+        }
+        catch(error){
+            console.log(error);
             res.send(error)
         }
     }
