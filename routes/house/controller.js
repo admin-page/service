@@ -14,11 +14,17 @@ module.exports = {
     },
     uploadHouse: async (req,res) =>{
         try{
-            const result = await House.create({
-              ...req.body
-            })
-            res.send({message:'data succesfuly upload', data:result})
+            if(req.token.isAdmin){
+                const result = await House.create({
+                    ...req.body
+                  })
+                  res.send({message:'data succesfuly upload', data:result})
+              }
+              else{
+                    res.status(403).send({message:'forbidden'})
+            }
         }
+           
         catch(error){
             res.send(error)
         }
@@ -27,11 +33,17 @@ module.exports = {
         const {user_id} = req.params
         const {houseTitle, image_url, desc, location} = req.body
         try{
-            const result = await House.updateOne({user_id},{
-                ...req.body
-            })
-            res.send({message:'data upload succesfuly', data:result})
+            if(req.token.isAdmin){
+                const result = await House.updateOne({user_id},{
+                    ...req.body
+                })
+                res.send({message:'data upload succesfuly', data:result})
+            }
+            else{
+                res.status(403).send({message:'forbidden'})
+            }
         }
+           
         catch(error){
             res.send(error)
         }
@@ -39,11 +51,17 @@ module.exports = {
     deleteHouse: async (req,res) =>{
         const {houseTitle} = req.body;
         try{
-            const result = await House.deleteOne({
-                houseTitle:houseTitle
-            })
-            res.send({message:'data deleted', data:result})
+            if(req.token.isAdmin){
+                const result = await House.deleteOne({
+                    houseTitle:houseTitle
+                })
+                res.send({message:'data deleted', data:result})
+            }
+            else{
+                res.status(403).send({message:'forbidden'})
+            }
         }
+          
         catch(error){
             res.send(error)
         }
@@ -55,6 +73,17 @@ module.exports = {
             res.send({message:'get by title', data:result})
         }
         catch(error){
+            res.send(error)
+        }
+    },
+    findHouseById: async (req,res) =>{
+        const {id} = req.params
+        try{
+            const result =  await House.findById(id)
+            res.send({message:'display house by id', data:result})
+        }
+        catch(error){
+            console.log(error);
             res.send(error)
         }
     }
