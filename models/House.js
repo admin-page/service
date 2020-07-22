@@ -5,6 +5,9 @@ const HouseSchema = new Schema({
     houseTitle:{
         type:String,
     },
+    price:{
+        type:Number
+    },
     location:{
         type:String,
     },
