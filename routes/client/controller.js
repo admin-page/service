@@ -32,6 +32,20 @@ module.exports = {
         }
     },
 
+    getUserId: async (req, res) => {
+        const { id } = req.params;
+
+        try {
+            const result = await User.find({ _id: id });
+            if (result) {
+                res.send({ result: result });
+            }
+            res.send(`${search} Not Found`);
+        } catch (error) {
+            res.send(error);
+        }
+    },
+
     createUser: async (req, res) => {
         const { email, password } = req.body;
         const hashed = await hash(password);
