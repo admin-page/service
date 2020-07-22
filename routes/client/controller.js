@@ -1,6 +1,7 @@
 const { User } = require("../../models");
 const { hash, compare } = require("../../helpers");
 const { createToken } = require("../../helpers");
+const fs = require("fs");
 
 module.exports = {
     getUser: async (req, res) => {
@@ -22,11 +23,12 @@ module.exports = {
                     { fullname: { $regex: search, $options: "i" } },
                     { address: { $regex: search, $options: "i" } },
                 ],
-            }).exec();
+            });
             if (result) {
                 res.send({ result: result });
+            } else {
+                res.send(`${search} Not Found`);
             }
-            res.send(`${search} Not Found`);
         } catch (error) {
             res.send(error);
         }
@@ -36,11 +38,13 @@ module.exports = {
         const { id } = req.params;
 
         try {
-            const result = await User.find({ _id: id });
+            const result = await User.findById(id);
+            console.log(result);
             if (result) {
                 res.send({ result: result });
+            } else {
+                res.send(`${search} Not Found`);
             }
-            res.send(`${search} Not Found`);
         } catch (error) {
             res.send(error);
         }
@@ -56,14 +60,21 @@ module.exports = {
             }).exec();
             if (checkEmail) {
                 res.send(`Email ${email} has been registered`);
+            } else {
+                const img = fs.readFileSync(req.file.path);
+                const encode_image = img.toString("base64");
+                const avatar = {
+                    contentType: req.file.mimetype,
+                    data: new Buffer(encode_image, "base64"),
+                };
+                const result = await User.create({
+                    ...req.body,
+                    password: hashed,
+                    avatar,
+                });
+
+                res.send({ message: "Registration Completed", data: result });
             }
-
-            const result = await User.create({
-                ...req.body,
-                password: hashed,
-            });
-
-            res.send({ message: "Registration Completed", data: result });
         } catch (error) {
             console.log(error);
         }

@@ -27,6 +27,22 @@ module.exports = {
         }
     },
 
+    getAdminId: async (req, res) => {
+        const { id } = req.params;
+
+        try {
+            const result = await Admin.findById(id);
+            console.log(result);
+            if (result) {
+                res.send({ result: result });
+            } else {
+                res.send(`${search} Not Found`);
+            }
+        } catch (error) {
+            res.send(error);
+        }
+    },
+
     createAdmin: async (req, res) => {
         const { email, password } = req.body;
         const hashed = await hash(password);
@@ -37,14 +53,14 @@ module.exports = {
             }).exec();
             if (checkEmail) {
                 res.send(`Email ${email} has been registered`);
+            } else {
+                const result = await Admin.create({
+                    ...req.body,
+                    password: hashed,
+                });
+
+                res.send({ message: "Registration Completed", data: result });
             }
-
-            const result = await Admin.create({
-                ...req.body,
-                password: hashed,
-            });
-
-            res.send({ message: "Registration Completed", data: result });
         } catch (error) {
             console.log(error);
         }
@@ -102,6 +118,7 @@ module.exports = {
                 );
                 if (compared === true) {
                     const token = await createToken({
+                        isAdmin:true,
                         id: registeredUser._id,
                         fullname: registeredUser.fullname,
                         email: registeredUser.email,

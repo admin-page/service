@@ -12,7 +12,7 @@ const userSchema = new Schema({
         unique: true,
     },
     phone: {
-        type: Number,
+        type: String,
         required: true,
     },
     password: {
@@ -29,11 +29,9 @@ const userSchema = new Schema({
     },
     createdBy: {
         type: String,
-        required: true,
     },
     updatedBy: {
         type: String,
-        required: true,
     },
     createdAt: {
         type: Date,
@@ -45,7 +43,6 @@ const userSchema = new Schema({
     },
     approvedBy: {
         type: String,
-        required: true,
     },
 });
 
