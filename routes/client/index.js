@@ -11,4 +11,7 @@ router.delete("/:id", require("./controller").deleteUser);
 //Route Login
 router.post("/login", require("./controller").login);
 
+//Route Logout
+router.get("/logout", require("./controller").logout);
+
 module.exports = router;
