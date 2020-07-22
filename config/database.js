@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
-const { DATABASE } = require("./environment");
+
+const { MONGODB_URI_LOCAL, MONGODB_URI_ATLAS } = require("./environment");
 
 mongoose
-    .connect(DATABASE, {
+    .connect(MONGODB_URI_LOCAL || MONGODB_URI_ATLAS, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify: false,
         useCreateIndex: true,
+        useFindAndModify: false,
     })
     .then(() => {
         console.log("Success connect to database");
