@@ -2,21 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const HouseSchema = new Schema({
-    houseType:{
+    houseTitle:{
         type:String,
-        required:true
     },
-    price:{
-        type:Number,
-        required:true
+    location:{
+        type:String,
     },
     image_url:{
         type:String,
-        required:true
     },
     desc:{
         type:String,
-        required:true
     },
     createdAt:{
         type:Date,
@@ -25,7 +21,14 @@ const HouseSchema = new Schema({
     updatedAt:{
         type:Date,
         default:Date.now
+    },
+    createdBy:{
+        type:String,
+    },
+    updatedBy:{
+        type:String, 
     }
+
 })
 
 const House = mongoose.model('house', HouseSchema);

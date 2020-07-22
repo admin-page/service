@@ -12,6 +12,7 @@ app.get("/", (req, res) => {
 
 app.use("/admin", require("./routes/admin"));
 app.use("/users", require("./routes/client"));
+app.use("/house", require("./routes/house"));
 app.get("*", (req, res) => {
     res.send("404 Page Not Found");
 });
