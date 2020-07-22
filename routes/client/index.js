@@ -1,17 +1,18 @@
 const router = require("express").Router();
-const { verifyToken } = require("../../helpers");
+const { verifyToken, upload } = require("../../helpers");
 
 //Route CRUD User
-router.get("/", require("./controller").getUser);
-router.get("/:search", require("./controller").getUserName);
-router.post("/", require("./controller").createUser);
-router.put("/:id", require("./controller").updateUser);
-router.delete("/:id", require("./controller").deleteUser);
+router.get("/", verifyToken, require("./controller").getUser);
+router.get("/search/:search", verifyToken, require("./controller").getUserName);
+router.get("/:id", verifyToken, require("./controller").getUserId);
+router.post("/", upload.single("avatar"), require("./controller").createUser);
+router.put("/:id", verifyToken, require("./controller").updateUser);
+router.delete("/:id", verifyToken, require("./controller").deleteUser);
 
 //Route Login
 router.post("/login", require("./controller").login);
 
 //Route Logout
-router.get("/logout", require("./controller").logout);
+router.get("/logout", verifyToken, require("./controller").logout);
 
 module.exports = router;
