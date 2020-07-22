@@ -125,4 +125,9 @@ module.exports = {
             console.log(error);
         }
     },
+
+    logout: (req, res) => {
+        req.logout();
+        res.redirect("/admin/login");
+    },
 };
