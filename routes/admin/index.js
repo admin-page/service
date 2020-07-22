@@ -3,15 +3,20 @@ const { verifyToken } = require("../../helpers");
 
 //Route CRUD Admin
 router.get("/", verifyToken, require("./controller").getAdmin);
-router.get("/:username", require("./controller").getAdminName);
+router.get(
+    "/username/:username",
+    verifyToken,
+    require("./controller").getAdminName
+);
+router.get("/:id", verifyToken, require("./controller").getAdminId);
 router.post("/", require("./controller").createAdmin);
-router.put("/:id", require("./controller").updateAdmin);
-router.delete("/:id", require("./controller").deleteAdmin);
+router.put("/:id", verifyToken, require("./controller").updateAdmin);
+router.delete("/:id", verifyToken, require("./controller").deleteAdmin);
 
 //Route Login
 router.post("/login", require("./controller").login);
 
 //Route Logout
-router.get("/logout", require("./controller").logout);
+router.get("/logout", verifyToken, require("./controller").logout);
 
 module.exports = router;
