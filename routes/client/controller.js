@@ -62,17 +62,6 @@ module.exports = {
             if (checkEmail) {
                 res.send(`Email ${email} has been registered`);
             } else {
-                const img =
-                    req.file != undefined
-                        ? fs.readFileSync(req.file.path)
-                        : fs.readFileSync("images/avatar_default.png");
-
-                const encode_image = img.toString("base64");
-                const avatar = {
-                    contentType:
-                        req.file != undefined ? req.file.mimetype : "image/png",
-                    data: new Buffer(encode_image, "base64"),
-                };
                 const result = await User.create({
                     ...req.body,
                     password: hashed,
@@ -91,22 +80,9 @@ module.exports = {
         try {
             const { password } = req.body;
             const hashed = await hash(password);
-            const img =
-                req.file != undefined
-                    ? fs.readFileSync(req.file.path)
-                    : fs.readFileSync("images/avatar_default.png");
-
-            const encode_image = img.toString("base64");
-            const avatar = {
-                contentType:
-                    req.file != undefined ? req.file.mimetype : "image/png",
-                data: new Buffer(encode_image, "base64"),
-            };
-
             const results = await User.findByIdAndUpdate(id, {
                 $set: {
                     ...req.body,
-                    avatar,
                     password: hashed,
                 },
             });
