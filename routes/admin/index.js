@@ -9,7 +9,7 @@ router.get(
     require("./controller").getAdminName
 );
 router.get("/:id", verifyToken, require("./controller").getAdminId);
-router.post("/", require("./controller").createAdmin);
+router.post("/", verifyToken, require("./controller").createAdmin);
 router.put("/:id", verifyToken, require("./controller").updateAdmin);
 router.delete("/:id", verifyToken, require("./controller").deleteAdmin);
 

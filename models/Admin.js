@@ -25,15 +25,9 @@ const adminSchema = new Schema({
     },
     createdBy: {
         type: String,
-        required: true,
     },
     updatedBy: {
         type: String,
-        required: true,
-    },
-    approvedBy: {
-        type: String,
-        required: true,
     },
 });
 
