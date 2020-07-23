@@ -27,6 +27,10 @@ const userSchema = new Schema({
         type: String,
         default: "https://cdn.filestackcontent.com/4PWohcEuShaNgAfCcl4D",
     },
+    status: {
+        type: String,
+        default: "PENDING",
+    },
     createdBy: {
         type: String,
     },

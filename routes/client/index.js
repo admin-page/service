@@ -3,6 +3,7 @@ const { verifyToken, upload } = require("../../helpers");
 
 //Route CRUD User
 router.get("/", verifyToken, require("./controller").getUser);
+router.get("/approval", verifyToken, require("./controller").approval);
 router.get("/search/:search", verifyToken, require("./controller").getUserName);
 router.get("/:id", verifyToken, require("./controller").getUserId);
 router.post("/", require("./controller").createUser);
