@@ -5,9 +5,13 @@ const { createToken } = require("../../helpers");
 module.exports = {
     getAdmin: async (req, res) => {
         try {
-            const result = await Admin.find();
+            if (req.token.isAdmin) {
+                const result = await Admin.find();
 
-            res.send({ message: "Get All datas users", data: result });
+                res.send({ message: "Get All datas users", data: result });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -17,11 +21,15 @@ module.exports = {
         const { username } = req.params;
 
         try {
-            const result = await Admin.find({
-                username: { $regex: username, $options: "i" },
-            });
+            if (req.token.isAdmin) {
+                const result = await Admin.find({
+                    username: { $regex: username, $options: "i" },
+                });
 
-            res.send({ result: result });
+                res.send({ result: result });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
         } catch (error) {
             res.send(error);
         }
@@ -31,12 +39,16 @@ module.exports = {
         const { id } = req.params;
 
         try {
-            const result = await Admin.findById(id);
-            console.log(result);
-            if (result) {
-                res.send({ result: result });
+            if (req.token.isAdmin) {
+                const result = await Admin.findById(id);
+
+                if (result) {
+                    res.send({ message: "Get Data By ID", data: result });
+                } else {
+                    res.status(400).send(`${search} Not Found`);
+                }
             } else {
-                res.send(`${search} Not Found`);
+                res.status(403).send({ message: "You are not allowed" });
             }
         } catch (error) {
             res.send(error);
@@ -48,18 +60,28 @@ module.exports = {
         const hashed = await hash(password);
 
         try {
-            const checkEmail = await Admin.findOne({
-                email,
-            }).exec();
-            if (checkEmail) {
-                res.send(`Email ${email} has been registered`);
-            } else {
-                const result = await Admin.create({
-                    ...req.body,
-                    password: hashed,
-                });
+            if (req.token.isAdmin) {
+                const checkEmail = await Admin.findOne({
+                    email,
+                }).exec();
+                if (checkEmail) {
+                    res.status(400).send({
+                        message: `Email ${email} has been registered`,
+                    });
+                } else {
+                    const result = await Admin.create({
+                        ...req.body,
+                        createdBy: req.token.email,
+                        password: hashed,
+                    });
 
-                res.send({ message: "Registration Completed", data: result });
+                    res.send({
+                        message: "Registration Completed",
+                        data: result,
+                    });
+                }
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
             }
         } catch (error) {
             console.log(error);
@@ -69,20 +91,32 @@ module.exports = {
     updateAdmin: async (req, res) => {
         const { id } = req.params;
         try {
-            const { password } = req.body;
-            const hashed = await hash(password);
-            const results = await Admin.findByIdAndUpdate(id, {
-                $set: {
-                    ...req.body,
-                    password: hashed,
-                },
-            });
+            if (req.token.isAdmin) {
+                const { password } = req.body;
 
-            res.send({
-                message: `Update data succcess`,
-                data: results,
-            });
+                if (password !== undefined) {
+                    const hashed = await hash(password);
+
+                    req.body.password = hashed;
+                }
+
+                const results = await Admin.findByIdAndUpdate(id, {
+                    $set: {
+                        ...req.body,
+                        updatedBy: req.token.email || req.token.username,
+                        updateAt: Date.now(),
+                    },
+                });
+
+                res.send({
+                    message: `Update data succcess`,
+                    data: results,
+                });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
         } catch (error) {
+            console.log(error);
             res.send(error);
         }
     },
@@ -91,13 +125,17 @@ module.exports = {
         const { id } = req.params;
 
         try {
-            const results = await Admin.deleteOne({
-                _id: id,
-            });
-            res.send({
-                message: `Delete data succcess`,
-                results: results,
-            });
+            if (req.token.isAdmin) {
+                const results = await Admin.deleteOne({
+                    _id: id,
+                });
+                res.send({
+                    message: `Delete data succcess`,
+                    results: results,
+                });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
         } catch (error) {
             res.send(error);
         }
@@ -118,7 +156,7 @@ module.exports = {
                 );
                 if (compared === true) {
                     const token = await createToken({
-                        isAdmin:true,
+                        isAdmin: true,
                         id: registeredUser._id,
                         fullname: registeredUser.fullname,
                         email: registeredUser.email,
