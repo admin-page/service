@@ -5,7 +5,7 @@ const { verifyToken, upload } = require("../../helpers");
 router.get("/", verifyToken, require("./controller").getUser);
 router.get("/search/:search", verifyToken, require("./controller").getUserName);
 router.get("/:id", verifyToken, require("./controller").getUserId);
-router.post("/", upload.single("avatar"), require("./controller").createUser);
+router.post("/", require("./controller").createUser);
 router.put("/:id", verifyToken, require("./controller").updateUser);
 router.delete("/:id", verifyToken, require("./controller").deleteUser);
 

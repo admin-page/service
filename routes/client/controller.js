@@ -65,7 +65,6 @@ module.exports = {
                 const result = await User.create({
                     ...req.body,
                     password: hashed,
-                    avatar,
                 });
 
                 res.send({ message: "Registration Completed", data: result });
