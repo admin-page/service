@@ -113,11 +113,13 @@ module.exports = {
 
     login: async (req, res) => {
         try {
-            const { password, email, username } = req.body;
+            const { password, email } = req.body;
 
             const registeredUser = await User.findOne({
-                $or: [{ email }, { username }],
+                $or: [{ email }],
             });
+
+            console.log(registeredUser);
 
             if (registeredUser !== null) {
                 const compared = await compare(
