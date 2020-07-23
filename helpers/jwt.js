@@ -20,7 +20,7 @@ const verifyToken = async (req, res, next) => {
             const validateToken = jwt.verify(token, JWT_SECRET);
 
             if (validateToken !== undefined) {
-                req.token = token;
+                req.token = validateToken;
                 next();
             }
         }
