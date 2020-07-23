@@ -52,6 +52,7 @@ module.exports = {
     },
 
     createUser: async (req, res) => {
+        const { email, password } = req.body;
         const hashed = await hash(password);
 
         try {
