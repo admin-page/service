@@ -24,8 +24,8 @@ const userSchema = new Schema({
         required: true,
     },
     avatar: {
-        data: Buffer,
-        contentType: String,
+        type: String,
+        default: "https://cdn.filestackcontent.com/4PWohcEuShaNgAfCcl4D",
     },
     createdBy: {
         type: String,
