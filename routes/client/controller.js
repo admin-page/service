@@ -7,9 +7,13 @@ const fs = require("fs");
 module.exports = {
     getUser: async (req, res) => {
         try {
-            const result = await User.find();
+            if (req.token.isAdmin) {
+                const result = await User.find({ status: { $ne: "PENDING" } });
 
-            res.send({ message: "Get All datas users", data: result });
+                res.send({ message: "Get All datas users", data: result });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -40,7 +44,7 @@ module.exports = {
 
         try {
             const result = await User.findById(id);
-            console.log(result);
+
             if (result) {
                 res.send({ result: result });
             } else {
@@ -77,12 +81,21 @@ module.exports = {
     updateUser: async (req, res) => {
         const { id } = req.params;
         try {
-            const { password } = req.body;
-            const hashed = await hash(password);
+            const { password, status } = req.body;
+
+            if (password) {
+                const hashed = await hash(password);
+
+                req.body.password = hashed;
+            }
+
+            if (status === "PENDING") {
+                req.body.approvedBy = req.token.email;
+            }
+
             const results = await User.findByIdAndUpdate(id, {
                 $set: {
                     ...req.body,
-                    password: hashed,
                 },
             });
 
@@ -99,13 +112,17 @@ module.exports = {
         const { id } = req.params;
 
         try {
-            const results = await User.deleteOne({
-                _id: id,
-            });
-            res.send({
-                message: `Delete data succcess`,
-                results: results,
-            });
+            if (req.token.isAdmin) {
+                const results = await User.deleteOne({
+                    _id: id,
+                });
+                res.send({
+                    message: `Delete data succcess`,
+                    results: results,
+                });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
         } catch (error) {
             res.send(error);
         }
@@ -131,6 +148,7 @@ module.exports = {
                         id: registeredUser._id,
                         fullname: registeredUser.fullname,
                         email: registeredUser.email,
+                        status: registeredUser.status,
                     });
 
                     res.send({
@@ -155,5 +173,19 @@ module.exports = {
     logout: (req, res) => {
         req.logout();
         res.redirect("/users/login");
+    },
+
+    approval: async (req, res) => {
+        try {
+            if (req.token.isAdmin) {
+                const result = await User.find({ status: "PENDING" });
+
+                res.send({ message: "Get All datas users", data: result });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     },
 };
