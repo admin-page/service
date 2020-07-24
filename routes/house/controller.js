@@ -25,11 +25,11 @@ module.exports = {
         }
     },
     updateHouse: async (req, res) => {
-        const { user_id } = req.params;
-        const { houseTitle, image_url, desc, location } = req.body;
+        const { id } = req.params;
+
         try {
             if (req.token.isAdmin) {
-                const result = await House.findByIdAndUpdate(user_id, {
+                const result = await House.findByIdAndUpdate(id, {
                     ...req.body,
                 });
                 res.send({ message: "data upload succesfuly", data: result });
