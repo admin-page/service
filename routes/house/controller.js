@@ -12,10 +12,12 @@ module.exports = {
     uploadHouse: async (req, res) => {
         try {
             if (req.token.isAdmin) {
+                console.log(req.token);
                 const result = await House.create({
                     ...req.body,
-                    createdBy: req.token.username,
+                    createdBy: req.token.email,
                 });
+
                 res.send({ message: "data succesfuly upload", data: result });
             } else {
                 res.status(403).send({ message: "forbidden" });
@@ -31,7 +33,7 @@ module.exports = {
             if (req.token.isAdmin) {
                 const result = await House.findByIdAndUpdate(id, {
                     ...req.body,
-                    updatedBy: req.token.username,
+                    updatedBy: req.token.email,
                 });
                 res.send({ message: "data upload succesfuly", data: result });
             } else {
