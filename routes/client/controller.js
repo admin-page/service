@@ -64,7 +64,9 @@ module.exports = {
                 email,
             }).exec();
             if (checkEmail) {
-                res.send({ message: `Email ${email} has been registered` });
+                res.status(400).send({
+                    message: `Email ${email} has been registered`,
+                });
             } else {
                 const result = await User.create({
                     ...req.body,
