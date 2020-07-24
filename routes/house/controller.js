@@ -29,12 +29,9 @@ module.exports = {
         const { houseTitle, image_url, desc, location } = req.body;
         try {
             if (req.token.isAdmin) {
-                const result = await House.updateOne(
-                    { user_id },
-                    {
-                        ...req.body,
-                    }
-                );
+                const result = await House.findByIdAndUpdate(user_id, {
+                    ...req.body,
+                });
                 res.send({ message: "data upload succesfuly", data: result });
             } else {
                 res.status(403).send({ message: "forbidden" });
