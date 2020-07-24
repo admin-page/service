@@ -3,6 +3,7 @@ const { verifyToken } = require("../../helpers");
 
 //Route CRUD Admin
 router.get("/", verifyToken, require("./controller").getAdmin);
+router.get("/dashboard", verifyToken, require("./controller").getSummary);
 router.get(
     "/username/:username",
     verifyToken,

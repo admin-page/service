@@ -1,4 +1,3 @@
-const { createToken, verifyToken } = require("../../helpers");
 const { House } = require("../../models");
 
 module.exports = {
@@ -15,6 +14,7 @@ module.exports = {
             if (req.token.isAdmin) {
                 const result = await House.create({
                     ...req.body,
+                    createdBy: req.token.username,
                 });
                 res.send({ message: "data succesfuly upload", data: result });
             } else {
@@ -31,6 +31,7 @@ module.exports = {
             if (req.token.isAdmin) {
                 const result = await House.findByIdAndUpdate(id, {
                     ...req.body,
+                    updatedBy: req.token.username,
                 });
                 res.send({ message: "data upload succesfuly", data: result });
             } else {
