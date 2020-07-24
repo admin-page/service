@@ -1,8 +1,29 @@
-const { Admin } = require("../../models");
+const { Admin, User, House } = require("../../models");
 const { hash, compare } = require("../../helpers");
 const { createToken } = require("../../helpers");
 
 module.exports = {
+    getSummary: async (req, res) => {
+        try {
+            if (req.token.isAdmin) {
+                const sumAdmin = await Admin.countDocuments();
+                const sumUser = await User.countDocuments();
+                const sumHouse = await House.countDocuments();
+
+                res.send({
+                    message: "Get All datas Summary",
+                    countAdmin: sumAdmin,
+                    countUser: sumUser,
+                    countHouse: sumHouse,
+                });
+            } else {
+                res.status(403).send({ message: "You are not allowed" });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
     getAdmin: async (req, res) => {
         try {
             if (req.token.isAdmin) {
