@@ -7,14 +7,41 @@ module.exports = {
         try {
             if (req.token.isAdmin) {
                 const sumAdmin = await Admin.countDocuments();
-                const sumUser = await User.countDocuments();
+                const userActive = await User.countDocuments({
+                    status: "ACTIVE",
+                });
+                const userPending = await User.countDocuments({
+                    status: "PENDING",
+                });
+                const userReject = await User.countDocuments({
+                    status: "REJECTED",
+                });
                 const sumHouse = await House.countDocuments();
 
                 res.send({
                     message: "Get All datas Summary",
-                    countAdmin: sumAdmin,
-                    countUser: sumUser,
-                    countHouse: sumHouse,
+                    data: [
+                        {
+                            status: "Admin",
+                            count: sumAdmin,
+                        },
+                        {
+                            status: "House",
+                            count: sumHouse,
+                        },
+                        {
+                            status: "User Pending",
+                            count: userPending,
+                        },
+                        {
+                            status: "User Active",
+                            count: userActive,
+                        },
+                        {
+                            status: "User Reject",
+                            count: userReject,
+                        },
+                    ],
                 });
             } else {
                 res.status(403).send({ message: "You are not allowed" });
