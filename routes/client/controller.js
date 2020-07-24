@@ -64,7 +64,7 @@ module.exports = {
                 email,
             }).exec();
             if (checkEmail) {
-                res.send(`Email ${email} has been registered`);
+                res.send({ message: `Email ${email} has been registered` });
             } else {
                 const result = await User.create({
                     ...req.body,
@@ -136,31 +136,37 @@ module.exports = {
                 $or: [{ email }, { username }],
             });
 
-            if (registeredUser !== null) {
-                const compared = await compare(
-                    password,
-                    registeredUser.password
-                );
-                if (compared === true) {
-                    const token = await createToken({
-                        id: registeredUser._id,
-                        fullname: registeredUser.fullname,
-                        email: registeredUser.email,
-                        status: registeredUser.status,
-                    });
+            if (registerdUser.status === "ACTIVE") {
+                if (registeredUser !== null) {
+                    const compared = await compare(
+                        password,
+                        registeredUser.password
+                    );
+                    if (compared === true) {
+                        const token = await createToken({
+                            id: registeredUser._id,
+                            fullname: registeredUser.fullname,
+                            email: registeredUser.email,
+                            status: registeredUser.status,
+                        });
 
-                    res.send({
-                        message: "Login Successfully",
-                        result: token,
-                    });
+                        res.send({
+                            message: "Login Successfully",
+                            result: token,
+                        });
+                    } else {
+                        res.status(403).send({
+                            message: "Your Email or Password is Incorrect",
+                        });
+                    }
                 } else {
                     res.status(403).send({
-                        message: "Your Email or Password is Incorrect",
+                        message: "Your Email is not registered",
                     });
                 }
             } else {
                 res.status(403).send({
-                    message: "Your Email is not registered",
+                    message: "Please Contact Administrator",
                 });
             }
         } catch (error) {
